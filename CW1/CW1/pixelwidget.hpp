@@ -36,6 +36,7 @@ public:
   void DefinePixelValues();
 
   void DrawLine(double p1x, double p1y, const RGBVal & p1Rgb, double p2x, double p2y, const RGBVal & p2Rgb, double step);
+  void DrawInterpolatedLine(double p1x, double p1y, const RGBVal & p1Rgb, double p2x, double p2y, const RGBVal & p2Rgb, double step);
 
 protected:
 

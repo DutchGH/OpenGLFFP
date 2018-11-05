@@ -17,8 +17,8 @@ void PixelWidget::DefinePixelValues(){ //add pixels here; write methods like thi
 
 
 void PixelWidget::DrawLine(double p1x, double p1y, const RGBVal & p1Rgb, double p2x, double p2y, const RGBVal & p2Rgb, double step){ //add pixels here; write methods like this for the assignments
-  SetPixel(p1x,p1y,p1Rgb);
-  SetPixel(p2x,p2y,p2Rgb);
+  SetPixel(static_cast<unsigned int>(p1x), static_cast<unsigned int>(p1y),p1Rgb);
+  SetPixel(static_cast<unsigned int>(p2x), static_cast<unsigned int>(p2y),p2Rgb);
   //Calculate Direction Vector in terms of X and Y for Parametic
   double dirX = p2x-p1x;
   double dirY = p2y-p1y;
@@ -34,7 +34,29 @@ void PixelWidget::DrawLine(double p1x, double p1y, const RGBVal & p1Rgb, double 
     double y = abs(p1y +(dirY * i));
     qDebug() << y;
 
-    SetPixel(x,y,RGBVal(255,0,0));
+    SetPixel(static_cast<unsigned int>(x), static_cast<unsigned int>(y),RGBVal(255,0,0));
+  }
+}
+
+void PixelWidget::DrawInterpolatedLine(double p1x, double p1y, const RGBVal & p1Rgb, double p2x, double p2y, const RGBVal & p2Rgb, double step){ //add pixels here; write methods like this for the assignments
+  SetPixel( static_cast<unsigned int>(p1x), static_cast<unsigned int>(p1y),p1Rgb);
+  SetPixel( static_cast<unsigned int>(p2x), static_cast<unsigned int>(p2y),p2Rgb);
+  //Calculate Direction Vector in terms of X and Y for Parametic
+  double dirX = p2x-p1x;
+  double dirY = p2y-p1y;
+  int rDiff = static_cast<int>(p2Rgb._red - p1Rgb._red);
+  int gDiff = static_cast<int>(p2Rgb._green - p1Rgb._green);
+  int bDiff = static_cast<int>(p2Rgb._blue - p1Rgb._blue);
+
+  for (double i = step; i < 1; i += step)
+  {
+    double x = std::abs(p1x + (dirX * i));
+    double y = std::abs(p1y +(dirY * i));
+    unsigned int r = static_cast<unsigned int>(p1Rgb._red + rDiff * i);
+    unsigned int g = static_cast<unsigned int>(p1Rgb._green + gDiff * i);
+    unsigned int b = static_cast<unsigned int>(p1Rgb._blue + bDiff * i);
+
+    SetPixel(static_cast<unsigned int>(x), static_cast<unsigned int>(y),RGBVal(r,g,b));
   }
 }
 
@@ -80,7 +102,7 @@ void PixelWidget::paintEvent( QPaintEvent * )
   pen.setWidth(0.);
 
   // here the pixel values defined by the user are set in the pixel array
-  DrawLine(10,30,RGBVal(255,0,0),50,10,RGBVal(255,0,0), 0.02);
+  DrawInterpolatedLine(10,30,RGBVal(255,0,0),50,10,RGBVal(120,100,255), 0.02);
 
   for (unsigned int i_column = 0 ; i_column < _n_vertical; i_column++)
     for(unsigned int i_row = 0; i_row < _n_horizontal; i_row++){
