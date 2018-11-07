@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QLabel>
+#include <QVector2D>
 #include <QDesktopWidget>
 #include <iostream>
 #include <vector>
@@ -34,9 +35,10 @@ public:
 
   // Use the body of this function to experiment with rendering algorithms
   void DefinePixelValues();
-
+  bool isBaryCentric(QVector2D &p, QVector2D &pA, QVector2D &pB, QVector2D &pC, float &alpha, float &beta, float &gamma);
   void DrawLine(double p1x, double p1y, const RGBVal & p1Rgb, double p2x, double p2y, const RGBVal & p2Rgb, double step);
   void DrawInterpolatedLine(double p1x, double p1y, const RGBVal & p1Rgb, double p2x, double p2y, const RGBVal & p2Rgb, double step);
+  void DrawBaryCentricTriangle(float p1x, float p1y, const RGBVal & p1Rgb, float p2x, float p2y, const RGBVal & p2Rgb, float p3x, float p3y, const RGBVal & p3Rgb);
 
 protected:
 
