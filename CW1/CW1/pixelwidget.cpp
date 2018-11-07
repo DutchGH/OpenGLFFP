@@ -106,9 +106,9 @@ void PixelWidget::DrawBaryCentricTriangle(float p1x, float p1y, const RGBVal & p
     int maxY = static_cast<int>(std::max(p1y, std::max(p2y, p3y)));
     int minY = static_cast<int>(std::min(p1y, std::min(p2y, p3y)));
 
-    for (int x = minX; x <= maxX; x++)
+    for (int y = minY; y <= maxY; y++)
     {
-      for (int y = minY; y <= maxY; y++)
+      for (int x = minX; x <= maxX; x++)
       {
         float alpha = 0.f;
         float beta = 0.f;
@@ -131,6 +131,79 @@ void PixelWidget::DrawBaryCentricTriangle(float p1x, float p1y, const RGBVal & p
       }
     }
 }
+
+void PixelWidget::isInside(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y)
+{
+    std::ofstream myfile;
+    myfile.open ("example.txt");
+
+    for (int y = 0; y <= static_cast<int>(_n_vertical); y++)
+    {
+      for (int x = 0; x <= static_cast<int>(_n_horizontal); x++)
+      {
+        float alpha = 0.f;
+        float beta = 0.f;
+        float gamma = 0.f;
+
+        QVector2D p = QVector2D(x, y);
+        QVector2D a = QVector2D(p1x, p1y);
+        QVector2D b = QVector2D(p2x, p2y);
+        QVector2D c = QVector2D(p3x, p3y);
+
+
+        isBaryCentric(p, a, b, c, alpha, beta, gamma);
+
+        myfile << alpha << "," << beta << "," << gamma << "; ";
+      }
+      myfile << std::endl;
+    }
+
+    myfile.close();
+
+
+}
+
+void PixelWidget::generatePPM(float p1x, float p1y, const RGBVal & p1Rgb, float p2x, float p2y, const RGBVal & p2Rgb, float p3x, float p3y, const RGBVal & p3Rgb)
+{
+    std::ofstream myfile;
+    myfile.open ("output.ppm");
+
+    myfile << "P3\n" << _n_horizontal << "\n" << _n_vertical << "\n" << "255" << std::endl;
+    for (int y = 0; y <= static_cast<int>(_n_vertical); y++)
+    {
+      for (int x = 0; x <= static_cast<int>(_n_horizontal); x++)
+      {
+        float alpha = 0.f;
+        float beta = 0.f;
+        float gamma = 0.f;
+
+        QVector2D p = QVector2D(x, y);
+        QVector2D a = QVector2D(p1x, p1y);
+        QVector2D b = QVector2D(p2x, p2y);
+        QVector2D c = QVector2D(p3x, p3y);
+
+
+        if(isBaryCentric(p, a, b, c, alpha, beta, gamma))
+        {
+            unsigned int newR = static_cast<unsigned int>((p1Rgb._red * alpha) + (p2Rgb._red * beta) + (p3Rgb._red * gamma));
+            unsigned int newG = static_cast<unsigned int>((p1Rgb._green * alpha) + (p2Rgb._green * beta) + (p3Rgb._green * gamma));
+            unsigned int newB = static_cast<unsigned int>((p1Rgb._blue * alpha) + (p2Rgb._blue * beta) + (p3Rgb._blue * gamma));
+            myfile << newR << " " << newG << " " << newB << "\t";
+        }
+        else
+        {
+            myfile << "0" << " " << "0" << " " << "0" << "\t";
+        }
+
+      }
+      myfile << std::endl;
+    }
+
+    myfile.close();
+
+
+}
+
 
 
 // -----------------Most code below can remain untouched -------------------------
@@ -174,7 +247,9 @@ void PixelWidget::paintEvent( QPaintEvent * )
   pen.setWidth(0.);
 
   // here the pixel values defined by the user are set in the pixel array
+  generatePPM(10,30,RGBVal(255,0,0),50,10,RGBVal(0,255,0),30,30,RGBVal(0,0,255));
   DrawBaryCentricTriangle(10,30,RGBVal(255,0,0),50,10,RGBVal(0,255,0),30,30,RGBVal(0,0,255));
+
 
   for (unsigned int i_column = 0 ; i_column < _n_vertical; i_column++)
     for(unsigned int i_row = 0; i_row < _n_horizontal; i_row++){
