@@ -115,14 +115,26 @@ void PixelWidget::DrawBaryCentricTriangle(float p1x, float p1y, const RGBVal & p
         float alpha = 0.f;
         float beta = 0.f;
         float gamma = 0.f;
+        bool inside = false;
 
         QVector2D p = QVector2D(x, y);
         QVector2D a = QVector2D(p1x, p1y);
         QVector2D b = QVector2D(p2x, p2y);
         QVector2D c = QVector2D(p3x, p3y);
 
+//        bool inAB = halfPlaneTest(a.x(), a.y(), b.x(), b.y(), p.x(), p.y());
+//        bool inBC = halfPlaneTest(b.x(), b.y(), c.x(), c.y(), p.x(), p.y());
+//        bool inCA = halfPlaneTest(c.x(), c.y(), a.x(), a.y(), p.x(), p.y());
 
-        if(isBaryCentric(p, a, b, c, alpha, beta, gamma))
+//        if(inAB && inBC && inCA)
+//        {
+//            qDebug() << "INSIDE!";
+//            inside = true;
+//        }
+
+
+
+        if(isBaryCentric(p, a, b, c, alpha, beta, gamma) /*&& inside*/)
         {
             unsigned int newR = static_cast<unsigned int>((p1Rgb._red * alpha) + (p2Rgb._red * beta) + (p3Rgb._red * gamma));
             unsigned int newG = static_cast<unsigned int>((p1Rgb._green * alpha) + (p2Rgb._green * beta) + (p3Rgb._green * gamma));
@@ -134,6 +146,27 @@ void PixelWidget::DrawBaryCentricTriangle(float p1x, float p1y, const RGBVal & p
     }
 }
 
+bool PixelWidget::halfPlaneTest(float p1x, float p1y, float p2x, float p2y, float px, float py)
+{
+    //find normal to P
+    float nX = p2x - p1x;
+    float nY = p2y - p1y;
+    QVector2D n = QVector2D((nY*-1.f),nX);
+
+
+    //Find F(P)
+    float xPx = px - p1x;
+    float xPy = py - p1y;
+    QVector2D p = QVector2D(xPx,xPy);
+
+    auto fP = QVector2D::dotProduct(p,n);
+
+    if (fP >= 0)
+    {
+        return true;
+    }
+    return false;
+}
 
 void PixelWidget::isInside(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y)
 {
@@ -147,16 +180,26 @@ void PixelWidget::isInside(float p1x, float p1y, float p2x, float p2y, float p3x
         float alpha = 0.f;
         float beta = 0.f;
         float gamma = 0.f;
+        bool inside = false;
 
         QVector2D p = QVector2D(x, y);
         QVector2D a = QVector2D(p1x, p1y);
         QVector2D b = QVector2D(p2x, p2y);
         QVector2D c = QVector2D(p3x, p3y);
 
+        bool inAB = halfPlaneTest(a.x(), a.y(), b.x(), b.y(), p.x(), p.y());
+        bool inBC = halfPlaneTest(b.x(), b.y(), c.x(), c.y(), p.x(), p.y());
+        bool inCA = halfPlaneTest(c.x(), c.y(), a.x(), a.y(), p.x(), p.y());
+
+        if(inAB && inBC && inCA)
+        {
+            inside = true;
+        }
+
 
         isBaryCentric(p, a, b, c, alpha, beta, gamma);
 
-        myfile << alpha << "," << beta << "," << gamma << "; ";
+        myfile << alpha << "," << beta << "," << gamma << "," << inside << "; ";
       }
       myfile << std::endl;
     }
@@ -258,10 +301,10 @@ void PixelWidget::paintEvent( QPaintEvent * )
   //  DrawInterpolatedLine(10,30,RGBVal(255,0,0),50,10,RGBVal(0,255,0),0.02);
 
   //  ASSIGNMENT 3
-    DrawBaryCentricTriangle(10,30,RGBVal(255,0,0),50,10,RGBVal(0,255,0),30,30,RGBVal(0,0,255));
+//    DrawBaryCentricTriangle(10,30,RGBVal(255,0,0),50,10,RGBVal(0,255,0),30,30,RGBVal(0,0,255));
 
   //  ASSIGNMENT 4
-  //  isInside(10,30, 50,10,30,30);
+    isInside(10,30, 50,10,30,30);
 
   //  ASSIGNMENT 5
   //  generatePPM(10,30,RGBVal(255,0,0),50,10,RGBVal(0,255,0),30,30,RGBVal(0,0,255));
