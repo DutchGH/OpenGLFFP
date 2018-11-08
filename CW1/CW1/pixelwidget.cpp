@@ -17,29 +17,31 @@ void PixelWidget::DefinePixelValues(){ //add pixels here; write methods like thi
 }
 
 
-void PixelWidget::DrawLine(double p1x, double p1y, const RGBVal & p1Rgb, double p2x, double p2y, const RGBVal & p2Rgb, double step){ //add pixels here; write methods like this for the assignments
-  SetPixel(static_cast<unsigned int>(p1x), static_cast<unsigned int>(p1y),p1Rgb);
-  SetPixel(static_cast<unsigned int>(p2x), static_cast<unsigned int>(p2y),p2Rgb);
+void PixelWidget::DrawLine(double p1x, double p1y, double p2x, double p2y, double step)
+{
+  SetPixel(static_cast<unsigned int>(p1x), static_cast<unsigned int>(p1y),RGBVal(255,0,0));
+  SetPixel(static_cast<unsigned int>(p2x), static_cast<unsigned int>(p2y),RGBVal(255,0,0));
   //Calculate Direction Vector in terms of X and Y for Parametic
   double dirX = p2x-p1x;
   double dirY = p2y-p1y;
-  qDebug() << dirX << "," << dirY;
+//  qDebug() << dirX << "," << dirY;
 
   for (double i = step; i < 1; i += step)
   {
-    qDebug() << i;
+//    qDebug() << i;
 
     double x = abs(p1x + (dirX * i));
-    qDebug() << x;
+//    qDebug() << x;
 
     double y = abs(p1y +(dirY * i));
-    qDebug() << y;
+//    qDebug() << y;
 
     SetPixel(static_cast<unsigned int>(x), static_cast<unsigned int>(y),RGBVal(255,0,0));
   }
 }
 
-void PixelWidget::DrawInterpolatedLine(double p1x, double p1y, const RGBVal & p1Rgb, double p2x, double p2y, const RGBVal & p2Rgb, double step){ //add pixels here; write methods like this for the assignments
+void PixelWidget::DrawInterpolatedLine(double p1x, double p1y, const RGBVal & p1Rgb, double p2x, double p2y, const RGBVal & p2Rgb, double step)
+{
   SetPixel( static_cast<unsigned int>(p1x), static_cast<unsigned int>(p1y),p1Rgb);
   SetPixel( static_cast<unsigned int>(p2x), static_cast<unsigned int>(p2y),p2Rgb);
   //Calculate Direction Vector in terms of X and Y for Parametic
@@ -132,6 +134,7 @@ void PixelWidget::DrawBaryCentricTriangle(float p1x, float p1y, const RGBVal & p
     }
 }
 
+
 void PixelWidget::isInside(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y)
 {
     std::ofstream myfile;
@@ -162,6 +165,7 @@ void PixelWidget::isInside(float p1x, float p1y, float p2x, float p2y, float p3x
 
 
 }
+
 
 void PixelWidget::generatePPM(float p1x, float p1y, const RGBVal & p1Rgb, float p2x, float p2y, const RGBVal & p2Rgb, float p3x, float p3y, const RGBVal & p3Rgb)
 {
@@ -238,7 +242,7 @@ void PixelWidget::paintEvent( QPaintEvent * )
   p.setRenderHint( QPainter::Antialiasing, false );
 
   // set window/viewport so that the size fits the screen, within reason
-  p.setWindow(QRect(-1.,-1.,_n_vertical+2,_n_horizontal+2));
+  p.setWindow(QRect(-1.,-1.,static_cast<int>(_n_vertical+2),static_cast<int>(_n_horizontal+2)));
   int side = qMin(width(), height());  
   p.setViewport(0, 0, side, side);
 
@@ -246,15 +250,29 @@ void PixelWidget::paintEvent( QPaintEvent * )
   QPen pen( Qt::black );
   pen.setWidth(0.);
 
-  // here the pixel values defined by the user are set in the pixel array
-  generatePPM(10,30,RGBVal(255,0,0),50,10,RGBVal(0,255,0),30,30,RGBVal(0,0,255));
-  DrawBaryCentricTriangle(10,30,RGBVal(255,0,0),50,10,RGBVal(0,255,0),30,30,RGBVal(0,0,255));
+//All Assignments Can Be Put Here:
+  //  ASSIGNMENT 1
+  //  DrawLine(10,30,50,10,0.02);
+
+  //  ASSIGNMENT 2
+  //  DrawInterpolatedLine(10,30,RGBVal(255,0,0),50,10,RGBVal(0,255,0),0.02);
+
+  //  ASSIGNMENT 3
+    DrawBaryCentricTriangle(10,30,RGBVal(255,0,0),50,10,RGBVal(0,255,0),30,30,RGBVal(0,0,255));
+
+  //  ASSIGNMENT 4
+  //  isInside(10,30, 50,10,30,30);
+
+  //  ASSIGNMENT 5
+  //  generatePPM(10,30,RGBVal(255,0,0),50,10,RGBVal(0,255,0),30,30,RGBVal(0,0,255));
 
 
-  for (unsigned int i_column = 0 ; i_column < _n_vertical; i_column++)
-    for(unsigned int i_row = 0; i_row < _n_horizontal; i_row++){
+  for (int i_column = 0 ; i_column < static_cast<int>(_n_vertical); i_column++)
+    for(int i_row = 0; i_row < static_cast<int>(_n_horizontal); i_row++){
       QRect rect(i_column,i_row,1,1);
-      QColor c = QColor(_vec_rects[i_column][i_row]._red, _vec_rects[i_column][i_row]._green, _vec_rects[i_column][i_row]._blue);
+      QColor c = QColor(_vec_rects[i_column][i_row]._red,
+                        _vec_rects[i_column][i_row]._green,
+                        _vec_rects[i_column][i_row]._blue);
     
       // fill with color for the pixel
       p.fillRect(rect, QBrush(c));
