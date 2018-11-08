@@ -171,7 +171,7 @@ bool PixelWidget::halfPlaneTest(float p1x, float p1y, float p2x, float p2y, floa
 void PixelWidget::isInside(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y)
 {
     std::ofstream myfile;
-    myfile.open ("example.txt");
+    myfile.open ("halfPlane.txt");
 
     for (int y = 0; y <= static_cast<int>(_n_vertical); y++)
     {
@@ -202,6 +202,50 @@ void PixelWidget::isInside(float p1x, float p1y, float p2x, float p2y, float p3x
         myfile << alpha << "," << beta << "," << gamma << "," << inside << "; ";
       }
       myfile << std::endl;
+    }
+
+    myfile.close();
+
+
+}
+
+void PixelWidget::listCorrectValues(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y)
+{
+    std::ofstream myfile;
+    myfile.open ("insideResults.txt");
+
+    for (int y = 0; y <= static_cast<int>(_n_vertical); y++)
+    {
+      for (int x = 0; x <= static_cast<int>(_n_horizontal); x++)
+      {
+        float alpha = 0.f;
+        float beta = 0.f;
+        float gamma = 0.f;
+        bool inside = false;
+
+        QVector2D p = QVector2D(x, y);
+        QVector2D a = QVector2D(p1x, p1y);
+        QVector2D b = QVector2D(p2x, p2y);
+        QVector2D c = QVector2D(p3x, p3y);
+
+        bool inAB = halfPlaneTest(a.x(), a.y(), b.x(), b.y(), p.x(), p.y());
+        bool inBC = halfPlaneTest(b.x(), b.y(), c.x(), c.y(), p.x(), p.y());
+        bool inCA = halfPlaneTest(c.x(), c.y(), a.x(), a.y(), p.x(), p.y());
+
+        if(inAB && inBC && inCA)
+        {
+            inside = true;
+        }
+
+
+        bool isBary = isBaryCentric(p, a, b, c, alpha, beta, gamma);
+
+        if (inside && isBary)
+        {
+            myfile << alpha << "," << beta << "," << gamma << "," << std::endl;
+        }
+
+      }
     }
 
     myfile.close();
@@ -305,6 +349,8 @@ void PixelWidget::paintEvent( QPaintEvent * )
 
   //  ASSIGNMENT 4
     isInside(10,30, 50,10,30,30);
+    listCorrectValues(10,30, 50,10,30,30);
+
 
   //  ASSIGNMENT 5
   //  generatePPM(10,30,RGBVal(255,0,0),50,10,RGBVal(0,255,0),30,30,RGBVal(0,0,255));

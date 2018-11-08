@@ -37,6 +37,7 @@ public:
   void DefinePixelValues();
   bool halfPlaneTest(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y);
   bool isBaryCentric(QVector2D &p, QVector2D &pA, QVector2D &pB, QVector2D &pC, float &alpha, float &beta, float &gamma);
+  void listCorrectValues(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y);
   void DrawLine(double p1x, double p1y, double p2x, double p2y, double step);
   void DrawInterpolatedLine(double p1x, double p1y, const RGBVal & p1Rgb, double p2x, double p2y, const RGBVal & p2Rgb, double step);
   void DrawBaryCentricTriangle(float p1x, float p1y, const RGBVal & p1Rgb, float p2x, float p2y, const RGBVal & p2Rgb, float p3x, float p3y, const RGBVal & p3Rgb);
