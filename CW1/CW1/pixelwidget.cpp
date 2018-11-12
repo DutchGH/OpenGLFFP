@@ -172,7 +172,7 @@ void PixelWidget::isInside(float p1x, float p1y, float p2x, float p2y, float p3x
 {
     std::ofstream myfile;
     myfile.open ("halfPlane.txt");
-
+    myfile << "Pixel Coordinates\tBarycentric Coordinates\tHalf Plane Test\tBarycentric Test" << std::endl;
     for (int y = 0; y <= static_cast<int>(_n_vertical); y++)
     {
       for (int x = 0; x <= static_cast<int>(_n_horizontal); x++)
@@ -197,11 +197,12 @@ void PixelWidget::isInside(float p1x, float p1y, float p2x, float p2y, float p3x
         }
 
 
-        isBaryCentric(p, a, b, c, alpha, beta, gamma);
+        bool bary = isBaryCentric(p, a, b, c, alpha, beta, gamma);
 
-        myfile << alpha << "," << beta << "," << gamma << "," << inside << "; ";
+
+        myfile << x << "," << y << "\t";
+        myfile << "[" << alpha << "," << beta << "," << gamma << "]" << "\t" << std::boolalpha << inside << "\t" << std::boolalpha << bary << std::endl;
       }
-      myfile << std::endl;
     }
 
     myfile.close();
