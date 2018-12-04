@@ -12,22 +12,22 @@
 class MyWidget : public QWidget {
 protected:
   int hour = 3;
-  int min = 45;
+  int minute = 55;
   virtual void paintEvent(QPaintEvent*);
 };
 
 static const QPoint hourHand[3] = 
 {
-  QPoint(7,8),
-  QPoint(-7,8),
-  QPoint(0,-40)
+  QPoint(3,0),
+  QPoint(-3,0),
+  QPoint(0,-10)
 };
 
 static const QPoint minuteHand[3] = 
 {
-  QPoint(7,8),
-  QPoint(-7,8),
-  QPoint(0,-70)
+  QPoint(3,0),
+  QPoint(-3,0),
+  QPoint(0,-20)
 };
 
 QColor hourColour(127,0,127);
@@ -72,12 +72,17 @@ void MyWidget::paintEvent( QPaintEvent * )
     p.drawLine(hourLine);
   }
 
-  p.scale(0.15,0.15);
-
-  p.setPen(hourColour);
+  // p.scale(0.5,0.5);
+  QTransform transform;
+  p.setPen(QPen(hourColour,0.3));
+  transform.rotate(hour*(30));
+  p.setTransform(transform);
   p.drawPolygon(hourHand,3);
 
-  p.setPen(minColour);
+  p.setPen(QPen(minColour,0.3));
+  transform.reset();
+  transform.rotate(minute * 6);
+  p.setTransform(transform);
   p.drawPolygon(minuteHand,3);
   // http://doc.qt.io/archives/qt-4.8/qtransform.html
   // Look at this for transformation matrix for tomorrow... Bed now.
