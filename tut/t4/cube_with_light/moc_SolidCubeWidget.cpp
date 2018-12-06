@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_SolidCubeWidget_t {
-    QByteArrayData data[3];
-    char stringdata0[30];
+    QByteArrayData data[4];
+    char stringdata0[36];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -33,10 +33,11 @@ static const qt_meta_stringdata_SolidCubeWidget_t qt_meta_stringdata_SolidCubeWi
     {
 QT_MOC_LITERAL(0, 0, 15), // "SolidCubeWidget"
 QT_MOC_LITERAL(1, 16, 12), // "setCubeAngle"
-QT_MOC_LITERAL(2, 29, 0) // ""
+QT_MOC_LITERAL(2, 29, 0), // ""
+QT_MOC_LITERAL(3, 30, 5) // "angle"
 
     },
-    "SolidCubeWidget\0setCubeAngle\0"
+    "SolidCubeWidget\0setCubeAngle\0\0angle"
 };
 #undef QT_MOC_LITERAL
 
@@ -54,10 +55,10 @@ static const uint qt_meta_data_SolidCubeWidget[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   19,    2, 0x0a /* Public */,
+       1,    1,   19,    2, 0x0a /* Public */,
 
  // slots: parameters
-    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,    3,
 
        0        // eod
 };
@@ -68,11 +69,10 @@ void SolidCubeWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         SolidCubeWidget *_t = static_cast<SolidCubeWidget *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->setCubeAngle(); break;
+        case 0: _t->setCubeAngle((*reinterpret_cast< int(*)>(_a[1]))); break;
         default: ;
         }
     }
-    Q_UNUSED(_a);
 }
 
 const QMetaObject SolidCubeWidget::staticMetaObject = {

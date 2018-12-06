@@ -1,6 +1,7 @@
 #include <GL/glu.h>
 #include <QGLWidget>
 #include <QTimer>
+#include <QDebug>
 #include "SolidCubeWidget.h"
 
 
@@ -71,9 +72,10 @@ void SolidCubeWidget::resizeGL(int w, int h)
 
 	} // resizeGL()
 
-void SolidCubeWidget::setCubeAngle() 
+void SolidCubeWidget::setCubeAngle(int angle) 
 {
-  cubeAngle = (cubeAngle + 1) %360;
+  cubeAngle = angle*3.6;
+  // qDebug() << cubeAngle;
   this->updateGL();
 }
 
