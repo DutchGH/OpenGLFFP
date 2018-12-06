@@ -30,11 +30,11 @@ SolidCubeWindow::SolidCubeWindow(QWidget *parent)
 	nVerticesSlider = new QSlider(Qt::Horizontal);
 	windowLayout->addWidget(nVerticesSlider);
 
-	// QTimer *timer = new QTimer(this);
-	// connect(timer, SIGNAL(timeout()), cubeWidget, SLOT(setCubeAngle()));
-	// timer->start(50);
+	QTimer *timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), cubeWidget, SLOT(setCubeAngle()));
+	timer->start(1);
 
-		connect(nVerticesSlider, SIGNAL(valueChanged(int)), cubeWidget, SLOT(setCubeAngle(int)));
+		// connect(nVerticesSlider, SIGNAL(valueChanged(int)), cubeWidget, SLOT(setCubeAngle(int)));
 
 	} // constructor
 

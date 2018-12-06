@@ -14,6 +14,7 @@ class SolidCubeWidget: public QGLWidget
 
 	public slots:
 		void setCubeAngle(int angle);
+		void setCubeAngle();
 
 		
 	protected:
