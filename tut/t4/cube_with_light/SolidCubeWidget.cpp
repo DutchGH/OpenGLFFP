@@ -1,5 +1,6 @@
 #include <GL/glu.h>
 #include <QGLWidget>
+#include <QTimer>
 #include "SolidCubeWidget.h"
 
 
@@ -31,6 +32,7 @@ static materialStruct whiteShinyMaterials = {
 SolidCubeWidget::SolidCubeWidget(QWidget *parent)
 	: QGLWidget(parent)
 	{ // constructor
+
        
 
 	} // constructor
@@ -69,6 +71,11 @@ void SolidCubeWidget::resizeGL(int w, int h)
 
 	} // resizeGL()
 
+void SolidCubeWidget::setCubeAngle() 
+{
+  cubeAngle = (cubeAngle + 1) %360;
+  this->updateGL();
+}
 
 void SolidCubeWidget::cube(){
 
@@ -145,15 +152,18 @@ void SolidCubeWidget::paintGL()
 
 
 
-	this->cube();
+	
+  // this->cube();
   // this->cube();
   glPushMatrix();
-  glTranslatef(3.0,0.0,0.0);
-  this->cube();
+      // glRotatef(25 ,1.0,0.0,0.0);
+      glRotatef(this->getCubeAngle() ,0.0,1.0,0.0);
+      // glRotatef(this->cubeAngle ,0.0,0.0,1.0);
+      this->cube();
   glPopMatrix();
   // glPushMatrix();
     // glTranslatef(3.0,0.0,0.0);
-     glRotatef(30.0,0.0,4.0,0.0);
+    //  glRotatef(30.0,0.0,4.0,0.0);
     // glTranslatef(-3.0,0.0,0.0);
   // glPopMatrix();
 

@@ -29,6 +29,10 @@ SolidCubeWindow::SolidCubeWindow(QWidget *parent)
 	// create slider
 	nVerticesSlider = new QSlider(Qt::Horizontal);
 	windowLayout->addWidget(nVerticesSlider);
+
+	QTimer *timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), cubeWidget, SLOT(setCubeAngle()));
+	timer->start(50);
 	} // constructor
 
 SolidCubeWindow::~SolidCubeWindow()

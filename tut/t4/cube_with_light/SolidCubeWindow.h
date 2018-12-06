@@ -5,17 +5,19 @@
 #include <QMenuBar>
 #include <QSlider>
 #include <QBoxLayout>
+#include <QObject>
+#include <QTimer>
 #include "SolidCubeWidget.h"
 
 class SolidCubeWindow: public QWidget
 	{ 
+		Q_OBJECT
 	public:
        
 	
 	// constructor / destructor
-	SolidCubeWindow(QWidget *parent);
-	~SolidCubeWindow();
-
+	SolidCubeWindow(QWidget *parent = 0);
+	virtual ~SolidCubeWindow();
 	// visual hierarchy
 	// menu bar
 	QMenuBar *menuBar;

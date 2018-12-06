@@ -52,10 +52,13 @@ OBJECTS_DIR   = ./
 
 SOURCES       = SolidCubeMain.cpp \
 		SolidCubeWidget.cpp \
-		SolidCubeWindow.cpp 
+		SolidCubeWindow.cpp moc_SolidCubeWidget.cpp \
+		moc_SolidCubeWindow.cpp
 OBJECTS       = SolidCubeMain.o \
 		SolidCubeWidget.o \
-		SolidCubeWindow.o
+		SolidCubeWindow.o \
+		moc_SolidCubeWidget.o \
+		moc_SolidCubeWindow.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -349,8 +352,20 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 	g++ -pipe -O2 -Wall -W -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all:
+compiler_moc_header_make_all: moc_SolidCubeWidget.cpp moc_SolidCubeWindow.cpp
 compiler_moc_header_clean:
+	-$(DEL_FILE) moc_SolidCubeWidget.cpp moc_SolidCubeWindow.cpp
+moc_SolidCubeWidget.cpp: SolidCubeWidget.h \
+		moc_predefs.h \
+		/usr/lib/qt5/bin/moc
+	/usr/lib/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/jholland/Documents/graphics/tut/t4/cube_with_light -I/home/jholland/Documents/graphics/tut/t4/cube_with_light -I/opt/local/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include SolidCubeWidget.h -o moc_SolidCubeWidget.cpp
+
+moc_SolidCubeWindow.cpp: SolidCubeWidget.h \
+		SolidCubeWindow.h \
+		moc_predefs.h \
+		/usr/lib/qt5/bin/moc
+	/usr/lib/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/jholland/Documents/graphics/tut/t4/cube_with_light -I/home/jholland/Documents/graphics/tut/t4/cube_with_light -I/opt/local/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include SolidCubeWindow.h -o moc_SolidCubeWindow.cpp
+
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
 compiler_uic_make_all:
@@ -361,7 +376,7 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_predefs_clean 
+compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean 
 
 ####### Compile
 
@@ -375,6 +390,12 @@ SolidCubeWidget.o: SolidCubeWidget.cpp SolidCubeWidget.h
 SolidCubeWindow.o: SolidCubeWindow.cpp SolidCubeWindow.h \
 		SolidCubeWidget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o SolidCubeWindow.o SolidCubeWindow.cpp
+
+moc_SolidCubeWidget.o: moc_SolidCubeWidget.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_SolidCubeWidget.o moc_SolidCubeWidget.cpp
+
+moc_SolidCubeWindow.o: moc_SolidCubeWindow.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_SolidCubeWindow.o moc_SolidCubeWindow.cpp
 
 ####### Install
 
