@@ -13,6 +13,7 @@ class SolidCubeWidget: public QGLWidget
 	int getCubeAngle(){return cubeAngle;}
 
 	public slots:
+		void setCubeAngle(int angle);
 		void setCubeAngle();
 
 		

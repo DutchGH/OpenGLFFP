@@ -1,6 +1,7 @@
 #include <GL/glu.h>
 #include <QGLWidget>
 #include <QTimer>
+#include <QDebug>
 #include "SolidCubeWidget.h"
 
 
@@ -71,9 +72,17 @@ void SolidCubeWidget::resizeGL(int w, int h)
 
 	} // resizeGL()
 
+void SolidCubeWidget::setCubeAngle(int angle) 
+{
+  cubeAngle = angle* 3.6;
+  // qDebug() << cubeAngle;
+  this->updateGL();
+}
+
 void SolidCubeWidget::setCubeAngle() 
 {
-  cubeAngle = (cubeAngle + 1) %360;
+  cubeAngle = (cubeAngle + 1) % 360;
+  // qDebug() << cubeAngle;
   this->updateGL();
 }
 
@@ -146,6 +155,7 @@ void SolidCubeWidget::paintGL()
 	glPushMatrix();
 	glLoadIdentity();
         GLfloat light_pos[] = {-3., 3., 10., 0.};
+        glRotatef(this->getCubeAngle(),0.0, 1.0, 0.0);
         glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
         glLightf (GL_LIGHT0, GL_SPOT_CUTOFF,15.);
 	glPopMatrix();
@@ -157,7 +167,7 @@ void SolidCubeWidget::paintGL()
   // this->cube();
   glPushMatrix();
       // glRotatef(25 ,1.0,0.0,0.0);
-      glRotatef(this->getCubeAngle() ,0.0,1.0,0.0);
+      glRotatef((this->getCubeAngle()) ,0.0,-1.0,0.0);
       // glRotatef(this->cubeAngle ,0.0,0.0,1.0);
       this->cube();
   glPopMatrix();
