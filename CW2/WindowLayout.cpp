@@ -1,7 +1,7 @@
-#include "SolidCubeWindow.h"
+#include "WindowLayout.h"
 
 // constructor / destructor
-SolidCubeWindow::SolidCubeWindow(QWidget *parent)
+WindowLayout::WindowLayout(QWidget *parent)
 	: QWidget(parent)
 	{ // constructor
 
@@ -23,23 +23,35 @@ SolidCubeWindow::SolidCubeWindow(QWidget *parent)
 	windowLayout = new QBoxLayout(QBoxLayout::TopToBottom, this);
 
 	// create main widget
-	cubeWidget = new SolidCubeWidget(this);
+	cubeWidget = new GLMain(this);
 	windowLayout->addWidget(cubeWidget);
 
 	// create slider
 	nVerticesSlider = new QSlider(Qt::Horizontal);
 	windowLayout->addWidget(nVerticesSlider);
 
+	praiseButton = new QPushButton("PRAISE THE SUN!");
+	starButton = new QPushButton("Change Star Colours");
+
+	windowLayout->addWidget(praiseButton);
+	windowLayout->addWidget(starButton);
+
+
+
 	QTimer *timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), cubeWidget, SLOT(setCubeAngle()));
 	timer->start(1);
+
+
 
 		// connect(nVerticesSlider, SIGNAL(valueChanged(int)), cubeWidget, SLOT(setCubeAngle(int)));
 
 	} // constructor
 
-SolidCubeWindow::~SolidCubeWindow()
+WindowLayout::~WindowLayout()
 	{ // destructor
+	delete praiseButton;
+	delete starButton;
 	delete nVerticesSlider;
 	delete cubeWidget;
 	delete windowLayout;
@@ -49,7 +61,7 @@ SolidCubeWindow::~SolidCubeWindow()
 	} // destructor
 
 // resets all the interface elements
-void SolidCubeWindow::ResetInterface()
+void WindowLayout::ResetInterface()
 	{ // ResetInterface()
 	nVerticesSlider->setMinimum(0);
 	nVerticesSlider->setMaximum(360);

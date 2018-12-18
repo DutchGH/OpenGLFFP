@@ -1,20 +1,14 @@
 #include <QApplication>
 #include <QVBoxLayout>
-#include "SolidCubeWindow.h"
+#include "WindowLayout.h"
 
 int main(int argc, char *argv[])
 	{ // main()
 	// create the application
 	QApplication app(argc, argv);
 
-	// create model (polygon) as a triangle
-	//	GLPolygon *polygon = new GLPolygon();
-
 	// create a master widget
-    SolidCubeWindow *window = new SolidCubeWindow(NULL);
-
-	// create a controller to hook things up
-	//	GLPolygonController *controller = new GLPolygonController(window, polygon);
+    WindowLayout *window = new WindowLayout(NULL);
 
 	// resize the window
 	window->resize(512, 612);

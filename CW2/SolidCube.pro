@@ -3,15 +3,18 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = SolidCube
+TARGET = JacobHollandGraphics
 INCLUDEPATH += . /opt/local/include
 
 QT += widgets opengl gui 
 
-LIBS += -lGLU
+LIBS += -lGLU -lglut
 
 # Input
-HEADERS += SolidCubeWidget.h SolidCubeWindow.h 
-SOURCES += SolidCubeMain.cpp \
-           SolidCubeWidget.cpp \
-           SolidCubeWindow.cpp
+HEADERS += star.h solaire.h planet.h GLMain.h textures.h WindowLayout.h 
+SOURCES += MainWindow.cpp \
+           GLMain.cpp \
+           WindowLayout.cpp \
+           planet.cpp \
+           solaire.cpp \
+           star.cpp

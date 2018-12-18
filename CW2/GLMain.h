@@ -5,11 +5,11 @@
 #include <QObject>
 
 
-class SolidCubeWidget: public QGLWidget
+class GLMain: public QGLWidget
 	{ // 
 	Q_OBJECT
 	public:
-	SolidCubeWidget(QWidget *parent = 0);
+	GLMain(QWidget *parent = 0);
 	int getCubeAngle(){return cubeAngle;}
 
 	public slots:

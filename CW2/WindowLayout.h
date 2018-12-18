@@ -5,19 +5,20 @@
 #include <QMenuBar>
 #include <QSlider>
 #include <QBoxLayout>
+#include <QPushButton>
 #include <QObject>
 #include <QTimer>
-#include "SolidCubeWidget.h"
+#include "GLMain.h"
 
-class SolidCubeWindow: public QWidget
+class WindowLayout: public QWidget
 	{ 
 		Q_OBJECT
 	public:
        
 	
 	// constructor / destructor
-	SolidCubeWindow(QWidget *parent = 0);
-	virtual ~SolidCubeWindow();
+	WindowLayout(QWidget *parent = 0);
+	virtual ~WindowLayout();
 	// visual hierarchy
 	// menu bar
 	QMenuBar *menuBar;
@@ -30,9 +31,11 @@ class SolidCubeWindow: public QWidget
 	QBoxLayout *windowLayout;
 
 	// beneath that, the main widget
-	SolidCubeWidget *cubeWidget;
+	GLMain *cubeWidget;
 	// and a slider for the number of vertices
 	QSlider *nVerticesSlider;
+	QPushButton * praiseButton;
+	QPushButton * starButton;
 
 	// resets all the interface elements
 	void ResetInterface();
