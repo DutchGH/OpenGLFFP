@@ -6,13 +6,12 @@ TEMPLATE = app
 TARGET = SolidCube
 INCLUDEPATH += . /opt/local/include
 
-LIBS += -lGLU
-
 QT += widgets opengl gui 
 
+LIBS += -lGLU
+
 # Input
-HEADERS += SolidCubeWidget.h SolidCubeWindow.h Image.h 
+HEADERS += SolidCubeWidget.h SolidCubeWindow.h 
 SOURCES += SolidCubeMain.cpp \
            SolidCubeWidget.cpp \
-           SolidCubeWindow.cpp \
-           Image.cpp
+           SolidCubeWindow.cpp

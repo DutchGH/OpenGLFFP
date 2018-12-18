@@ -11,8 +11,10 @@ int main(int argc, char *argv[])
 	//	GLPolygon *polygon = new GLPolygon();
 
 	// create a master widget
-       	SolidCubeWindow *window = new SolidCubeWindow(NULL);
+    SolidCubeWindow *window = new SolidCubeWindow(NULL);
 
+	// create a controller to hook things up
+	//	GLPolygonController *controller = new GLPolygonController(window, polygon);
 
 	// resize the window
 	window->resize(512, 612);

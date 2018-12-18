@@ -2,22 +2,21 @@
 #define __GL_POLYGON_WIDGET_H__ 1
 
 #include <QGLWidget>
-#include <GL/glut.h>
-#include "Image.h"
+#include <QObject>
+
 
 class SolidCubeWidget: public QGLWidget
 	{ // 
-
 	Q_OBJECT
-
 	public:
-
-	SolidCubeWidget(QWidget *parent);
-	~SolidCubeWidget();
+	SolidCubeWidget(QWidget *parent = 0);
+	int getCubeAngle(){return cubeAngle;}
 
 	public slots:
-	void updateAngle(int);
+		void setCubeAngle(int angle);
+		void setCubeAngle();
 
+		
 	protected:
 	// called when OpenGL context is set up
 	void initializeGL();
@@ -28,11 +27,11 @@ class SolidCubeWidget: public QGLWidget
 
 	private:
 
-	void sphere();
+	void cube();
+	void polygon(int, int, int, int);
 
-	Image _image;
+	int cubeAngle = 0;
 
-	int angle;
 	}; // class GLPolygonWidget
 	
 #endif

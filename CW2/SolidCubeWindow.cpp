@@ -27,19 +27,20 @@ SolidCubeWindow::SolidCubeWindow(QWidget *parent)
 	windowLayout->addWidget(cubeWidget);
 
 	// create slider
-	nSlider = new QSlider(Qt::Horizontal);
-	connect(nSlider, SIGNAL(valueChanged(int)), cubeWidget, SLOT(updateAngle(int)));
-	windowLayout->addWidget(nSlider);
+	nVerticesSlider = new QSlider(Qt::Horizontal);
+	windowLayout->addWidget(nVerticesSlider);
 
-	praiseButton = new QPushButton("PRAISE THE SUN");
-	windowLayout->addWidget(praiseButton);
+	QTimer *timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), cubeWidget, SLOT(setCubeAngle()));
+	timer->start(1);
+
+		// connect(nVerticesSlider, SIGNAL(valueChanged(int)), cubeWidget, SLOT(setCubeAngle(int)));
+
 	} // constructor
-
-	
 
 SolidCubeWindow::~SolidCubeWindow()
 	{ // destructor
-	delete nSlider;
+	delete nVerticesSlider;
 	delete cubeWidget;
 	delete windowLayout;
 	delete actionQuit;
@@ -50,9 +51,12 @@ SolidCubeWindow::~SolidCubeWindow()
 // resets all the interface elements
 void SolidCubeWindow::ResetInterface()
 	{ // ResetInterface()
-	nSlider->setMinimum(0);
-	nSlider->setMaximum(360);
-	nSlider->setValue(0);
+	nVerticesSlider->setMinimum(0);
+	nVerticesSlider->setMaximum(360);
+
+	//don't use the slider for now
+
+	//	nVerticesSlider->setValue(thePolygon->nVertices);
 	
 	// now force refresh
 	cubeWidget->update();
