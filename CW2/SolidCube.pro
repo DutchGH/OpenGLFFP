@@ -11,10 +11,11 @@ QT += widgets opengl gui
 LIBS += -lGLU -lglut
 
 # Input
-HEADERS += star.h solaire.h planet.h GLMain.h textures.h WindowLayout.h 
+HEADERS += star.h solaire.h planet.h GLMain.h Image.h textures.h WindowLayout.h 
 SOURCES += MainWindow.cpp \
            GLMain.cpp \
            WindowLayout.cpp \
+           Image.cpp \
            planet.cpp \
            solaire.cpp \
            star.cpp

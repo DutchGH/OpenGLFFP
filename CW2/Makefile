@@ -53,6 +53,7 @@ OBJECTS_DIR   = ./
 SOURCES       = MainWindow.cpp \
 		GlMain.cpp \
 		WindowLayout.cpp \
+		Image.cpp \
 		planet.cpp \
 		solaire.cpp \
 		star.cpp moc_GLMain.cpp \
@@ -60,6 +61,7 @@ SOURCES       = MainWindow.cpp \
 OBJECTS       = MainWindow.o \
 		GlMain.o \
 		WindowLayout.o \
+		Image.o \
 		planet.o \
 		solaire.o \
 		star.o \
@@ -141,10 +143,12 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		solaire.h \
 		planet.h \
 		GLMain.h \
+		Image.h \
 		textures.h \
 		WindowLayout.h MainWindow.cpp \
 		GlMain.cpp \
 		WindowLayout.cpp \
+		Image.cpp \
 		planet.cpp \
 		solaire.cpp \
 		star.cpp
@@ -329,8 +333,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents star.h solaire.h planet.h GLMain.h textures.h WindowLayout.h $(DISTDIR)/
-	$(COPY_FILE) --parents MainWindow.cpp GlMain.cpp WindowLayout.cpp planet.cpp solaire.cpp star.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents star.h solaire.h planet.h GLMain.h Image.h textures.h WindowLayout.h $(DISTDIR)/
+	$(COPY_FILE) --parents MainWindow.cpp GlMain.cpp WindowLayout.cpp Image.cpp planet.cpp solaire.cpp star.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -365,12 +369,19 @@ moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 compiler_moc_header_make_all: moc_GLMain.cpp moc_WindowLayout.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_GLMain.cpp moc_WindowLayout.cpp
-moc_GLMain.cpp: GLMain.h \
+moc_GLMain.cpp: Image.h \
+		planet.h \
+		textures.h \
+		GLMain.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/jholland/Documents/graphics/CW2 -I/home/jholland/Documents/graphics/CW2 -I/opt/local/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include GLMain.h -o moc_GLMain.cpp
 
-moc_WindowLayout.cpp: WindowLayout.h \
+moc_WindowLayout.cpp: GLMain.h \
+		Image.h \
+		planet.h \
+		textures.h \
+		WindowLayout.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/jholland/Documents/graphics/CW2 -I/home/jholland/Documents/graphics/CW2 -I/opt/local/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include WindowLayout.h -o moc_WindowLayout.cpp
@@ -389,16 +400,33 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 
 ####### Compile
 
-MainWindow.o: MainWindow.cpp 
+MainWindow.o: MainWindow.cpp WindowLayout.h \
+		GLMain.h \
+		Image.h \
+		planet.h \
+		textures.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainWindow.o MainWindow.cpp
 
-GlMain.o: GlMain.cpp 
+GlMain.o: GlMain.cpp GLMain.h \
+		Image.h \
+		planet.h \
+		textures.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GlMain.o GlMain.cpp
 
-WindowLayout.o: WindowLayout.cpp 
+WindowLayout.o: WindowLayout.cpp WindowLayout.h \
+		GLMain.h \
+		Image.h \
+		planet.h \
+		textures.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o WindowLayout.o WindowLayout.cpp
 
-planet.o: planet.cpp 
+Image.o: Image.cpp Image.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Image.o Image.cpp
+
+planet.o: planet.cpp planet.h \
+		textures.h \
+		Image.h \
+		GLMain.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o planet.o planet.cpp
 
 solaire.o: solaire.cpp 

@@ -1,10 +1,10 @@
 #include <GL/glu.h>
 #include <QGLWidget>
 #include <QTimer>
+#include <math.h>
 #include <QDebug>
 #include "GLMain.h"
 #include "planet.h"
-
 typedef struct materialStruct {
   GLfloat ambient[4];
   GLfloat diffuse[4];
@@ -27,6 +27,20 @@ materialStruct whiteShinyMaterials = {
   100.0 
 };
 
+materialStruct superBright = {
+  { 1.5, 1.5, 1.5, 1.5},
+  { 1.5, 1.5, 1.5, 1.5},
+  { 1.5, 1.5, 1.5, 1.5},
+  100.0 
+};
+
+materialStruct StarLight = {
+  { 5.0, 5.0, 5.0, 5.0},
+  { 5.0, 5.0, 5.0, 5.0},
+  { 5.0, 5.0, 5.0, 5.0},
+  100.0 
+};
+
 // constructor
 GLMain::GLMain(QWidget *parent)
 	: QGLWidget(parent)
@@ -44,7 +58,7 @@ void GLMain::initializeGL()
 
 	} // initializeGL()
 
-
+  
 // called every time the widget is resized
 void GLMain::resizeGL(int w, int h)
 	{ // resizeGL()
@@ -53,7 +67,7 @@ void GLMain::resizeGL(int w, int h)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-   
+  glEnable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	GLfloat light_pos[] = {0., 0., 0., 1.};	
@@ -62,9 +76,13 @@ void GLMain::resizeGL(int w, int h)
                                                                                                                                         
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+  earth = new Planet(2.0f, 30,30, earthTex);
+  moon = new Planet(0.5f, 30,30, moonTex);
+  sun = new Planet(5.0f, 30,30, sunTex);
 	glOrtho(-20.0, 20.0, -20.0, 20.0, -50.0, 50.0);
 
 	} // resizeGL()
+
 
 void GLMain::setCubeAngle(int angle) 
 {
@@ -82,11 +100,11 @@ void GLMain::setCubeAngle()
 
 void GLMain::cube(){
 
-  // Here are the normals, correctly calculated for the cube faces below  
-  GLfloat normals[][3] = { {1., 0. ,0.}, 
-                           {-1., 0., 0.}, 
-                           {0., 0., 1.}, 
-                           {0., 0., -1.} };
+  // // Here are the normals, correctly calculated for the cube faces below  
+  // GLfloat normals[][3] = { {1., 0. ,0.}, 
+  //                          {-1., 0., 0.}, 
+  //                          {0., 0., 1.}, 
+  //                          {0., 0., -1.} };
 
   // Here we give every face the same normal
   // GLfloat normals[][3] = { {0.333, 0.333, 0.333 }, {0.333, 0.333, 0.333}, {0.333, 0.333, 0.333}, {0.3333, 0.3333, 0.333}};
@@ -94,47 +112,36 @@ void GLMain::cube(){
   // Here we have permuted the first normal array
   // GLfloat normals[][3] = {  {-1., 0., 0.}, {0., 0., 1.}, {1., 0. ,0.}, {0., 0., -1.} };
 
-  materialStruct* p_front = &brassMaterials;
+  materialStruct* p_front = &StarLight;
 	
   glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
   glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
   glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
   glMaterialf(GL_FRONT, GL_SHININESS,   p_front->shininess);
 
-  glNormal3fv(normals[0]);
-  glBegin(GL_POLYGON);
-    glVertex3f( 1.0, -1.0,  1.0);
-    glVertex3f( 1.0, -1.0, -1.0);
-    glVertex3f( 1.0,  1.0, -1.0);
-    glVertex3f( 1.0,  1.0,  1.0);
-    glEnd();
-
-  glNormal3fv(normals[3]); 
-  glBegin(GL_POLYGON);
-    glVertex3f(-1.0, -1.0, -1.0);
-    glVertex3f( 1.0, -1.0, -1.0);
-    glVertex3f( 1.0,  1.0, -1.0);
-    glVertex3f(-1.0,  1.0, -1.0);
-  glEnd();
-
-  glNormal3fv(normals[2]); 
-  glBegin(GL_POLYGON);
-    glVertex3f(-1.0, -1.0, 1.0);
-    glVertex3f( 1.0, -1.0, 1.0);
-    glVertex3f( 1.0,  1.0, 1.0);
-    glVertex3f(-1.0,  1.0, 1.0);
-  glEnd();
-
-  glNormal3fv(normals[1]);
-  glBegin(GL_POLYGON);
-    glVertex3f( -1.0, -1.0,  1.0);
-    glVertex3f( -1.0, -1.0, -1.0);
-    glVertex3f( -1.0,  1.0, -1.0);
-    glVertex3f( -1.0,  1.0,  1.0);
-  glEnd();
+	// Draw ten triangles
+  const float GOLDEN_RATIO = 1.61803398875;
+  const float STAR_MULTI_FACTOR = 1 + GOLDEN_RATIO;
+	const float outerRadius = 1;
+	const float innerRadius = 1/STAR_MULTI_FACTOR;
+	glBegin(GL_TRIANGLE_FAN);
+		glVertex3f(0, 0, 0.0);
+		for (int i = 0; i < 10; ++i) {
+			float fAngleStart	= M_PI/2.0 + (i*2.0*M_PI)/10.0;
+			float fAngleEnd		= fAngleStart + M_PI/5.0;
+			if (i % 2 == 0) {
+				glVertex3f(outerRadius*cos(fAngleStart)/1.9, outerRadius*sin(fAngleStart), 0.0);
+				glVertex3f(innerRadius*cos(fAngleEnd)/1.9, innerRadius*sin(fAngleEnd), 0.0);
+			} else {
+				glVertex3f(innerRadius*cos(fAngleStart)/1.9,innerRadius*sin(fAngleStart), 0.0);
+				glVertex3f(outerRadius*cos(fAngleEnd)/1.9, outerRadius*sin(fAngleEnd), 0.0);
+			}
+		}
+	glEnd();
   
 }
-	
+
+
 // called every time the widget needs painting
 void GLMain::paintGL()
 	{ // paintGL()
@@ -143,8 +150,7 @@ void GLMain::paintGL()
 
 	// You must set the matrix mode to model view directly before enabling the depth test
 
-	glEnable(GL_DEPTH_TEST); // comment out depth test to observe the result                                                                                                    
-  Planet * sun = new Planet(5.f, 30,30);
+	glEnable(GL_DEPTH_TEST); // comment out depth test to observe the result
   GLfloat emission[4] = {0.f, 0.0f, 1.0f, 1.0f};
  	glDisable(GL_LIGHTING);
     glPushMatrix();
@@ -152,13 +158,16 @@ void GLMain::paintGL()
 
       // glRotatef(this->cubeAngle ,0.0,0.0,1.0);
       // gluQuadricOrientation(sun->mPlanetQuad, GLU_INSIDE);
-      materialStruct* p_front = &brassMaterials;
-      glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
-      glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
-      glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
-      glMaterialf(GL_FRONT, GL_SHININESS,   p_front->shininess);
-      glMaterialfv(GL_FRONT, GL_EMISSION, emission );
+      // materialStruct* p_front = &superBright;
+      // glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
+      // glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
+      // glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
+      // glMaterialf(GL_FRONT, GL_SHININESS,   p_front->shininess);
+      // glMaterialfv(GL_FRONT, GL_EMISSION, emission );
+      glPushMatrix();
+      glRotatef(40,-1,0,0);
       sun->DrawPlanet();
+      glPopMatrix();
       // this->cube();
   glPopMatrix();
  	glEnable(GL_LIGHTING);
@@ -174,14 +183,15 @@ void GLMain::paintGL()
         // glLightf (GL_LIGHT0, GL_SPOT_CUTOFF,15.);
 	glPopMatrix();
 
+  glPushMatrix();
+          glTranslatef(0,10,0);
+          cube();
+      glPopMatrix();
 
 
 
-	
   // this->cube();
   // this->cube();
-  Planet * earth = new Planet(2.f, 30,30);
-  Planet * moon = new Planet(0.5f, 30,30);
   glPushMatrix();
       glRotatef((this->getCubeAngle()) ,0.0,-1.0,0.0);
     glPushMatrix();
@@ -189,19 +199,17 @@ void GLMain::paintGL()
         glRotatef((this->getCubeAngle()) ,0.0,-1.0,0.0);
 
         // glRotatef(this->cubeAngle ,0.0,0.0,1.0);
-        // materialStruct* p_front = &brassMaterials;
+        // materialStruct* p_front = &whiteShinyMaterials;
         // glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
         // glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
         // glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
         // glMaterialf(GL_FRONT, GL_SHININESS,   p_front->shininess);
-        gluQuadricTexture(eart->mPlanetQuad, GL_TRUE);
         earth->DrawPlanet();
         glPushMatrix();
-          GLfloat emission2[4] = {1.f, 0.0f, 0.0f, 1.0f};
-          glMaterialfv(GL_FRONT, GL_EMISSION, emission2 ); 
+          // GLfloat emission2[4] = {1.f, 0.0f, 0.0f, 1.0f};
+          // glMaterialfv(GL_FRONT, GL_EMISSION, emission2 ); 
           glTranslatef(-3.0,0.0,0.0);
           glRotatef((this->getCubeAngle()) ,0.0,1.0,0.0);
-
           moon->DrawPlanet();
         glPopMatrix();
         // this->cube();
@@ -220,7 +228,7 @@ void GLMain::paintGL()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-       	gluLookAt(1.,1.,1., 0.0,0.0,-1, 0.0,1.0,0.0);
+       	gluLookAt(0.,1.,1., 0.0,0.0,-1, 0.0,1.0,0.0);
   // glRotatef(45, 0.0, 1.0, 0.0);
        
 	
