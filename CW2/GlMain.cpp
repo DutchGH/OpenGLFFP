@@ -112,13 +112,6 @@ void GLMain::cube(){
   // Here we have permuted the first normal array
   // GLfloat normals[][3] = {  {-1., 0., 0.}, {0., 0., 1.}, {1., 0. ,0.}, {0., 0., -1.} };
 
-  materialStruct* p_front = &StarLight;
-	
-  glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
-  glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
-  glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
-  glMaterialf(GL_FRONT, GL_SHININESS,   p_front->shininess);
-
 	// Draw ten triangles
   const float GOLDEN_RATIO = 1.61803398875;
   const float STAR_MULTI_FACTOR = 1 + GOLDEN_RATIO;
@@ -157,12 +150,12 @@ void GLMain::paintGL()
       glRotatef(0,0.0,-1.0,0.0);
 
       // glRotatef(this->cubeAngle ,0.0,0.0,1.0);
-      // gluQuadricOrientation(sun->mPlanetQuad, GLU_INSIDE);
-      // materialStruct* p_front = &superBright;
-      // glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
-      // glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
-      // glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
-      // glMaterialf(GL_FRONT, GL_SHININESS,   p_front->shininess);
+      gluQuadricOrientation(sun->mPlanetQuad, GLU_INSIDE);
+      materialStruct* p_front = &brassMaterials;
+      glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
+      glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
+      glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
+      glMaterialf(GL_FRONT, GL_SHININESS,   p_front->shininess);
       // glMaterialfv(GL_FRONT, GL_EMISSION, emission );
       glPushMatrix();
       glRotatef(40,-1,0,0);
@@ -192,6 +185,11 @@ void GLMain::paintGL()
 
   // this->cube();
   // this->cube();
+  p_front = &superBright;
+  glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
+  glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
+  glMaterialf(GL_FRONT, GL_SHININESS,   p_front->shininess);
   glPushMatrix();
       glRotatef((this->getCubeAngle()) ,0.0,-1.0,0.0);
     glPushMatrix();
