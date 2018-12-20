@@ -30,7 +30,8 @@ class GLMain: public QGLWidget
 
 	private:
 
-	void cube();
+	void drawSingleStar();
+	void drawStarCluster(GLint NUMBER_OF_STARS);
 	void polygon(int, int, int, int);
 	Image *earthTex = new Image("./textures/earth.ppm");
 	Image *sunTex = new Image("./textures/Moi.ppm");

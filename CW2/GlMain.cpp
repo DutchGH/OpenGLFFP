@@ -35,9 +35,9 @@ materialStruct superBright = {
 };
 
 materialStruct StarLight = {
-  { 5.0, 5.0, 5.0, 5.0},
-  { 5.0, 5.0, 5.0, 5.0},
-  { 5.0, 5.0, 5.0, 5.0},
+  { 3.0, 3.0, 3.0, 3.0},
+  { 3.0, 3.0, 3.0, 3.0},
+  { 3.0, 3.0, 3.0, 3.0},
   100.0 
 };
 
@@ -98,26 +98,18 @@ void GLMain::setCubeAngle()
   this->updateGL();
 }
 
-void GLMain::cube(){
-
-  // // Here are the normals, correctly calculated for the cube faces below  
-  // GLfloat normals[][3] = { {1., 0. ,0.}, 
-  //                          {-1., 0., 0.}, 
-  //                          {0., 0., 1.}, 
-  //                          {0., 0., -1.} };
-
-  // Here we give every face the same normal
-  // GLfloat normals[][3] = { {0.333, 0.333, 0.333 }, {0.333, 0.333, 0.333}, {0.333, 0.333, 0.333}, {0.3333, 0.3333, 0.333}};
-
-  // Here we have permuted the first normal array
-  // GLfloat normals[][3] = {  {-1., 0., 0.}, {0., 0., 1.}, {1., 0. ,0.}, {0., 0., -1.} };
-
-	// Draw ten triangles
+void GLMain::drawSingleStar(){
   const float GOLDEN_RATIO = 1.61803398875;
   const float STAR_MULTI_FACTOR = 1 + GOLDEN_RATIO;
 	const float outerRadius = 1;
 	const float innerRadius = 1/STAR_MULTI_FACTOR;
-	glBegin(GL_TRIANGLE_FAN);
+
+    materialStruct* p_front = &StarLight;
+    glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
+    glMaterialf(GL_FRONT, GL_SHININESS,   p_front->shininess);
+    glBegin(GL_TRIANGLE_FAN);
 		glVertex3f(0, 0, 0.0);
 		for (int i = 0; i < 10; ++i) {
 			float fAngleStart	= M_PI/2.0 + (i*2.0*M_PI)/10.0;
@@ -131,7 +123,24 @@ void GLMain::cube(){
 			}
 		}
 	glEnd();
-  
+}
+
+void GLMain::drawStarCluster(GLint NUMBER_OF_STARS)
+{
+  srand (static_cast <unsigned> (time(0)));
+  //We have a viewport of 20,-20. in both X and y I would like to clip some stars without being overly wasteful
+  float MIN = -30.0;
+  float MAX = 30.0;
+  float DIFFERENCE = (MAX - MIN) + 1;
+  for (int i = 0; i < NUMBER_OF_STARS; ++i)
+  {
+    float transX = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/DIFFERENCE)) + (MIN);
+    float transY = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/DIFFERENCE)) + (MIN);
+    glPushMatrix();
+      glTranslatef(transX, transY, 0);
+      drawSingleStar();
+    glPopMatrix();
+  }
 }
 
 
@@ -151,7 +160,7 @@ void GLMain::paintGL()
 
       // glRotatef(this->cubeAngle ,0.0,0.0,1.0);
       gluQuadricOrientation(sun->mPlanetQuad, GLU_INSIDE);
-      materialStruct* p_front = &brassMaterials;
+      materialStruct* p_front = &StarLight;
       glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
       glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
       glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
@@ -177,19 +186,16 @@ void GLMain::paintGL()
 	glPopMatrix();
 
   glPushMatrix();
-          glTranslatef(0,10,0);
-          cube();
+    glTranslatef(0,0,-20);
+      glPushMatrix();
+        drawStarCluster(200);
       glPopMatrix();
+  glPopMatrix();
 
 
 
   // this->cube();
   // this->cube();
-  p_front = &superBright;
-  glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
-  glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
-  glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
-  glMaterialf(GL_FRONT, GL_SHININESS,   p_front->shininess);
   glPushMatrix();
       glRotatef((this->getCubeAngle()) ,0.0,-1.0,0.0);
     glPushMatrix();
