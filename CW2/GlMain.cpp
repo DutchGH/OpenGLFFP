@@ -45,9 +45,6 @@ materialStruct StarLight = {
 GLMain::GLMain(QWidget *parent)
 	: QGLWidget(parent)
 	{ // constructor
-
-       
-
 	} // constructor
 
 // called when OpenGL context is set up
@@ -55,18 +52,8 @@ void GLMain::initializeGL()
 	{ // initializeGL()
 	// set the widget background colour
 	glClearColor(0.0, 0.0, 0.0, 0.0);
-
 	} // initializeGL()
 
-void GLMain::setSolairePose(int i)
-{
-  if (this->solaire)
-  {
-    float newAngle = 180 * (i*0.01);
-    this->solaire->updateArmAngle(newAngle);
-    this->repaint();
-  }
-}
 
 // called every time the widget is resized
 void GLMain::resizeGL(int w, int h)
@@ -94,6 +81,7 @@ void GLMain::resizeGL(int w, int h)
 	} // resizeGL()
 
 
+//-----------------HELPER FUNCTIONS/SLOTS------------------//
 void GLMain::setCubeAngle(int angle) 
 {
   cubeAngle = angle* 3.6;
@@ -108,6 +96,36 @@ void GLMain::setCubeAngle()
   this->updateGL();
 }
 
+void GLMain::increaseZoom(int i){
+  currentZoom = 1 + (static_cast<double>(i)/50);
+  this->repaint();
+}
+
+
+void GLMain::setSolairePose(int i)
+{
+  if (this->solaire)
+  {
+    float newAngle = 180 * (i*0.01);
+    this->solaire->updateArmAngle(newAngle);
+    this->repaint();
+  }
+}
+
+//we have 8 colours, so make sure we don't go out of bounds..
+void GLMain::changeStarColours()
+{
+  currentColourEmission = (currentColourEmission + 1) % 8;
+}
+
+//return point to emission array
+GLfloat * GLMain::getCurrentColour()
+{
+  return emission[currentColourEmission];
+}
+
+//Create multiple tringles via a single point (origin)
+//vertices will occur at incremental points in the inner and outer circle
 void GLMain::drawSingleStar(){
   const float GOLDEN_RATIO = 1.61803398875;
   const float STAR_MULTI_FACTOR = 1 + GOLDEN_RATIO;
@@ -135,16 +153,10 @@ void GLMain::drawSingleStar(){
 	glEnd();
 }
 
-void GLMain::changeStarColours()
-{
-  currentColourEmission = (currentColourEmission + 1) % 8;
-}
 
-GLfloat * GLMain::getCurrentColour()
-{
-  return emission[currentColourEmission];
-}
 
+
+//Use a "Random" function to plot some stars in the background.
 void GLMain::drawStarCluster(GLint NUMBER_OF_STARS)
 {
   srand (static_cast <unsigned> (time(0)));
@@ -166,108 +178,89 @@ void GLMain::drawStarCluster(GLint NUMBER_OF_STARS)
 
 // called every time the widget needs painting
 void GLMain::paintGL()
-	{ // paintGL()
+{ // paintGL()
 	// clear the widget
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// You must set the matrix mode to model view directly before enabling the depth test
 
 	glEnable(GL_DEPTH_TEST); // comment out depth test to observe the result
- 	glDisable(GL_LIGHTING);
+ 	glDisable(GL_LIGHTING); //Disabling lighting when rendering the sun as the light is at the origin, The object will be textured to create depth anyway
+  
+  //Increase the overall zoom level, so you can witness more "lovely" details
+  glScaled(currentZoom, currentZoom, currentZoom);
+  
+  glPushMatrix();
+    glRotatef(0,0.0,-1.0,0.0);
+    gluQuadricOrientation(sun->mPlanetQuad, GLU_INSIDE);
+    materialStruct * p_front = &StarLight;
+    glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
+    glMaterialf(GL_FRONT, GL_SHININESS,   p_front->shininess);
+    glMaterialfv(GL_FRONT, GL_EMISSION, this->getCurrentColour() );
     glPushMatrix();
-      glRotatef(0,0.0,-1.0,0.0);
-        gluQuadricOrientation(sun->mPlanetQuad, GLU_INSIDE);
-        materialStruct * p_front = &StarLight;
-        glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
-        glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
-        glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
-        glMaterialf(GL_FRONT, GL_SHININESS,   p_front->shininess);
-      // glRotatef(this->cubeAngle ,0.0,0.0,1.0);
-      glMaterialfv(GL_FRONT, GL_EMISSION, this->getCurrentColour() );
-      glPushMatrix();
       glRotatef(40,-1,0,0);
+      //I'm sorry Marc... I truly am.
       sun->DrawPlanet();
-      glPopMatrix();
-      // this->cube();
+    glPopMatrix();
   glPopMatrix();
- 	glEnable(GL_LIGHTING);
 
-
-
- 
-
+  //Let's render the earth nicely
+  glEnable(GL_LIGHTING);
 	glPushMatrix();
-	glLoadIdentity();
-        GLfloat light_pos[] = {0., 0., 0., 1.};
-        // glRotatef(this->getCubeAngle(),0.0, 1.0, 0.0);
-        glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
-        // glLightf (GL_LIGHT0, GL_SPOT_CUTOFF,15.);
+	  glLoadIdentity();
+    GLfloat light_pos[] = {0., 0., 0., 1.};
+    glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
 	glPopMatrix();
-  // GLfloat color[4] = {&ambient[getCurrentColour()]};
+
   glPushMatrix();
     glTranslatef(0,0,-20);
       glPushMatrix();
-        // glMaterialfv(GL_FRONT, GL_EMISSION, ambient[getCurrentColour()]);
         drawStarCluster(200);
       glPopMatrix();
   glPopMatrix();
 
+  //Reset emission as the other materials don't use it
   GLfloat defaultEmission[] = {0,0,0,1};
   glMaterialfv(GL_FRONT, GL_EMISSION, defaultEmission );
 
-
-  // glMaterialfv(GL_FRONT, GL_EMISSION,;
-
-  // this->cube();
-  // this->cube();
   glPushMatrix();
-      glRotatef((this->getCubeAngle()) ,0.0,-1.0,0.0);
+    glRotatef((this->getCubeAngle()) ,0.0,-1.0,0.0);
     glPushMatrix();
-        glTranslatef(-10.0,0.0,0.0);
-        glRotatef((this->getCubeAngle()) ,0.0,-1.0,0.0);
+      glTranslatef(-10.0,0.0,0.0);
+      glRotatef((this->getCubeAngle()) ,0.0,-1.0,0.0);
+      p_front = &superBright;
+      glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
+      glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
+      glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
+      glMaterialf(GL_FRONT, GL_SHININESS,   p_front->shininess);
+      earth->DrawPlanet();
 
-        // glRotatef(this->cubeAngle ,0.0,0.0,1.0);
-        p_front = &whiteShinyMaterials;
+      glPushMatrix();
+        glTranslatef(0,4,0);
+        glScalef(0.5,0.5,0.5);
+        solaire->displaySolaire();
+      glPopMatrix();
+
+      glPushMatrix();
+        // GLfloat emission2[4] = {1.f, 0.0f, 0.0f, 1.0f};
         glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
         glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
         glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
         glMaterialf(GL_FRONT, GL_SHININESS,   p_front->shininess);
-        earth->DrawPlanet();
-        glPushMatrix();
-        glTranslatef(0,4,0);
-        glScalef(0.5,0.5,0.5);
-        solaire->displaySolaire();
-        glPopMatrix();
-        glPushMatrix();
-          // GLfloat emission2[4] = {1.f, 0.0f, 0.0f, 1.0f};
-          glMaterialfv(GL_FRONT, GL_AMBIENT,    p_front->ambient);
-          glMaterialfv(GL_FRONT, GL_DIFFUSE,    p_front->diffuse);
-          glMaterialfv(GL_FRONT, GL_SPECULAR,   p_front->specular);
-          glMaterialf(GL_FRONT, GL_SHININESS,   p_front->shininess);
-          glTranslatef(-3.0,0.0,0.0);
-          glRotatef((this->getCubeAngle()) ,0.0,1.0,0.0);
-          moon->DrawPlanet();
-        glPopMatrix();
-        // this->cube();
+        glTranslatef(-3.0,0.0,0.0);
+        glRotatef((this->getCubeAngle()) ,0.0,1.0,0.0);
+        //lets add a moon for completeness
+        moon->DrawPlanet();
+      glPopMatrix();
     glPopMatrix();
   glPopMatrix();
-  // glPushMatrix();
-    // glTranslatef(3.0,0.0,0.0);
-    //  glRotatef(30.0,0.0,4.0,0.0);
-    // glTranslatef(-3.0,0.0,0.0);
-  // glPopMatrix();
-
-
-  
-
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-       	gluLookAt(0.,1.,1., 0.0,0.0,-1, 0.0,1.0,0.0);
-  // glRotatef(45, 0.0, 1.0, 0.0);
+  gluLookAt(0.,1.,1., 0.0,0.0,-1, 0.0,1.0,0.0);
        
-	
 	// flush to screen
 	glFlush();	
 

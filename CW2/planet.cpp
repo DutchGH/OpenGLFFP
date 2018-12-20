@@ -19,6 +19,7 @@ Planet::Planet( GLdouble radius,
     }
 }
 
+//Gluspheres require a texture ID to load an bind properly
 GLuint Planet::loadTexture()
 {
     GLuint textureId;
@@ -40,6 +41,7 @@ void Planet::DrawPlanet()
         // glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        //generates the appropriate texture co-ordinates for mapping.
         gluQuadricTexture(mPlanetQuad, 1);
     }
     glPushMatrix();

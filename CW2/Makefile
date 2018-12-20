@@ -55,8 +55,7 @@ SOURCES       = MainWindow.cpp \
 		WindowLayout.cpp \
 		Image.cpp \
 		planet.cpp \
-		solaire.cpp \
-		star.cpp moc_GLMain.cpp \
+		solaire.cpp moc_GLMain.cpp \
 		moc_WindowLayout.cpp
 OBJECTS       = MainWindow.o \
 		GlMain.o \
@@ -64,7 +63,6 @@ OBJECTS       = MainWindow.o \
 		Image.o \
 		planet.o \
 		solaire.o \
-		star.o \
 		moc_GLMain.o \
 		moc_WindowLayout.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -139,19 +137,16 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		SolidCube.pro star.h \
-		solaire.h \
+		SolidCube.pro solaire.h \
 		planet.h \
 		GLMain.h \
 		Image.h \
-		textures.h \
 		WindowLayout.h MainWindow.cpp \
 		GlMain.cpp \
 		WindowLayout.cpp \
 		Image.cpp \
 		planet.cpp \
-		solaire.cpp \
-		star.cpp
+		solaire.cpp
 QMAKE_TARGET  = JacobHollandGraphics
 DESTDIR       = 
 TARGET        = JacobHollandGraphics
@@ -333,8 +328,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents star.h solaire.h planet.h GLMain.h Image.h textures.h WindowLayout.h $(DISTDIR)/
-	$(COPY_FILE) --parents MainWindow.cpp GlMain.cpp WindowLayout.cpp Image.cpp planet.cpp solaire.cpp star.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents solaire.h planet.h GLMain.h Image.h WindowLayout.h $(DISTDIR)/
+	$(COPY_FILE) --parents MainWindow.cpp GlMain.cpp WindowLayout.cpp Image.cpp planet.cpp solaire.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -371,7 +366,6 @@ compiler_moc_header_clean:
 	-$(DEL_FILE) moc_GLMain.cpp moc_WindowLayout.cpp
 moc_GLMain.cpp: Image.h \
 		planet.h \
-		textures.h \
 		solaire.h \
 		GLMain.h \
 		moc_predefs.h \
@@ -381,7 +375,6 @@ moc_GLMain.cpp: Image.h \
 moc_WindowLayout.cpp: GLMain.h \
 		Image.h \
 		planet.h \
-		textures.h \
 		solaire.h \
 		WindowLayout.h \
 		moc_predefs.h \
@@ -406,14 +399,12 @@ MainWindow.o: MainWindow.cpp WindowLayout.h \
 		GLMain.h \
 		Image.h \
 		planet.h \
-		textures.h \
 		solaire.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainWindow.o MainWindow.cpp
 
 GlMain.o: GlMain.cpp GLMain.h \
 		Image.h \
 		planet.h \
-		textures.h \
 		solaire.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GlMain.o GlMain.cpp
 
@@ -421,7 +412,6 @@ WindowLayout.o: WindowLayout.cpp WindowLayout.h \
 		GLMain.h \
 		Image.h \
 		planet.h \
-		textures.h \
 		solaire.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o WindowLayout.o WindowLayout.cpp
 
@@ -429,7 +419,6 @@ Image.o: Image.cpp Image.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Image.o Image.cpp
 
 planet.o: planet.cpp planet.h \
-		textures.h \
 		Image.h \
 		GLMain.h \
 		solaire.h
@@ -437,9 +426,6 @@ planet.o: planet.cpp planet.h \
 
 solaire.o: solaire.cpp solaire.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o solaire.o solaire.cpp
-
-star.o: star.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o star.o star.cpp
 
 moc_GLMain.o: moc_GLMain.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_GLMain.o moc_GLMain.cpp

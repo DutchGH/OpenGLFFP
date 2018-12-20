@@ -10,58 +10,64 @@
 
 
 class GLMain: public QGLWidget
-	{ // 
+	{ 
 	Q_OBJECT
 	public:
-	GLMain(QWidget *parent = 0);
-	int getCubeAngle(){return cubeAngle;}
-	// int getCurrentColour(){return currentColourEmission;}
+		GLMain(QWidget *parent = 0);
+		int getCubeAngle(){return cubeAngle;}
+		GLfloat * getCurrentColour();
 
 	public slots:
 		void setCubeAngle(int angle);
 		void setCubeAngle();
 		void setSolairePose(int i);
 		void changeStarColours();
-		GLfloat * getCurrentColour();
+		void increaseZoom(int i);
 
 	
 
 	protected:
-	// called when OpenGL context is set up
-	void initializeGL();
-	// called every time the widget is resized
-	void resizeGL(int w, int h);
-	// called every time the widget needs painting
-	void paintGL();
+		// called when OpenGL context is set up
+		void initializeGL();
+		// called every time the widget is resized
+		void resizeGL(int w, int h);
+		// called every time the widget needs painting
+		void paintGL();
 
 	private:
 
-	void drawSingleStar();
-	void drawStarCluster(GLint NUMBER_OF_STARS);
-	void polygon(int, int, int, int);
-	Image *earthTex = new Image("./textures/earth.ppm");
-	Image *sunTex = new Image("./textures/Moi.ppm");
-	Image *moonTex = new Image("./textures/moon.ppm");
+		void drawSingleStar();
+		void drawStarCluster(GLint NUMBER_OF_STARS);
+		void polygon(int, int, int, int);
 
-	Planet * earth = nullptr;
-  	Planet * moon = nullptr;
-  	Planet * sun = nullptr;
-	Solaire * solaire = nullptr;
-	int currentColourEmission = 0;
+		//Texture models for our planets
+		Image *earthTex = new Image("./textures/earth.ppm");
+		Image *sunTex = new Image("./textures/Moi.ppm");
+		Image *moonTex = new Image("./textures/moon.ppm");
 
-	int cubeAngle = 0;
+		//Our objects we want to display
+		Planet * earth = nullptr;
+		Planet * moon = nullptr;
+		Planet * sun = nullptr;
+		Solaire * solaire = nullptr;
 
-	GLfloat emission[8][4] = {
-		{0,0,0,1},
-		{1,0,0,1},
-		{0,1,0,1},
-		{0,1,1,1},
-		{1,0,1,1},
-		{1,1,0,1},
-		{1,1,0,1},
-		{0,0,0,1},
-	};
 
-	}; // class GLPolygonWidget
+		int currentColourEmission = 0;
+		float currentZoom = 1;
+
+		int cubeAngle = 0;
+
+		GLfloat emission[8][4] = {
+			{0,0,0,1},
+			{1,0,0,1},
+			{0,1,0,1},
+			{0,1,1,1},
+			{1,0,1,1},
+			{1,1,0,1},
+			{1,1,0,1},
+			{0,0,0,1},
+		};
+
+	}; 
 	
 #endif
