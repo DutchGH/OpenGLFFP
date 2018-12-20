@@ -23,23 +23,24 @@ WindowLayout::WindowLayout(QWidget *parent)
 	windowLayout = new QBoxLayout(QBoxLayout::TopToBottom, this);
 
 	// create main widget
-	cubeWidget = new GLMain(this);
-	windowLayout->addWidget(cubeWidget);
+	glWidget = new GLMain(this);
+	windowLayout->addWidget(glWidget);
 
 	// create slider
 	nVerticesSlider = new QSlider(Qt::Horizontal);
 	windowLayout->addWidget(nVerticesSlider);
-
-	praiseButton = new QPushButton("PRAISE THE SUN!");
+	sunBox = new QSpinBox();
 	starButton = new QPushButton("Change Star Colours");
 
-	windowLayout->addWidget(praiseButton);
+	connect(sunBox, SIGNAL(valueChanged(int)), glWidget, SLOT(setSolairePose(int)));
+	connect(starButton, SIGNAL (released()), glWidget, SLOT(changeStarColours()));
+	windowLayout->addWidget(sunBox);
 	windowLayout->addWidget(starButton);
 
-
+	
 
 	QTimer *timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), cubeWidget, SLOT(setCubeAngle()));
+	connect(timer, SIGNAL(timeout()), glWidget, SLOT(setCubeAngle()));
 	timer->start(1);
 
 
@@ -50,10 +51,10 @@ WindowLayout::WindowLayout(QWidget *parent)
 
 WindowLayout::~WindowLayout()
 	{ // destructor
-	delete praiseButton;
+	// delete praiseButton;
 	delete starButton;
 	delete nVerticesSlider;
-	delete cubeWidget;
+	delete glWidget;
 	delete windowLayout;
 	delete actionQuit;
 	delete fileMenu;
@@ -71,6 +72,6 @@ void WindowLayout::ResetInterface()
 	//	nVerticesSlider->setValue(thePolygon->nVertices);
 	
 	// now force refresh
-	cubeWidget->update();
+	glWidget->update();
 	update();
 	} // ResetInterface()

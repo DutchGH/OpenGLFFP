@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QObject>
 #include <QTimer>
+#include <QSpinBox>
 #include "GLMain.h"
 
 class WindowLayout: public QWidget
@@ -31,12 +32,11 @@ class WindowLayout: public QWidget
 	QBoxLayout *windowLayout;
 
 	// beneath that, the main widget
-	GLMain *cubeWidget;
+	GLMain *glWidget;
 	// and a slider for the number of vertices
 	QSlider *nVerticesSlider;
-	QPushButton * praiseButton;
 	QPushButton * starButton;
-
+	QSpinBox * sunBox;
 	// resets all the interface elements
 	void ResetInterface();
 	}; 

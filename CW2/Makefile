@@ -372,6 +372,7 @@ compiler_moc_header_clean:
 moc_GLMain.cpp: Image.h \
 		planet.h \
 		textures.h \
+		solaire.h \
 		GLMain.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
@@ -381,6 +382,7 @@ moc_WindowLayout.cpp: GLMain.h \
 		Image.h \
 		planet.h \
 		textures.h \
+		solaire.h \
 		WindowLayout.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
@@ -404,20 +406,23 @@ MainWindow.o: MainWindow.cpp WindowLayout.h \
 		GLMain.h \
 		Image.h \
 		planet.h \
-		textures.h
+		textures.h \
+		solaire.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainWindow.o MainWindow.cpp
 
 GlMain.o: GlMain.cpp GLMain.h \
 		Image.h \
 		planet.h \
-		textures.h
+		textures.h \
+		solaire.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GlMain.o GlMain.cpp
 
 WindowLayout.o: WindowLayout.cpp WindowLayout.h \
 		GLMain.h \
 		Image.h \
 		planet.h \
-		textures.h
+		textures.h \
+		solaire.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o WindowLayout.o WindowLayout.cpp
 
 Image.o: Image.cpp Image.h
@@ -426,10 +431,11 @@ Image.o: Image.cpp Image.h
 planet.o: planet.cpp planet.h \
 		textures.h \
 		Image.h \
-		GLMain.h
+		GLMain.h \
+		solaire.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o planet.o planet.cpp
 
-solaire.o: solaire.cpp 
+solaire.o: solaire.cpp solaire.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o solaire.o solaire.cpp
 
 star.o: star.cpp 

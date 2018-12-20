@@ -5,6 +5,7 @@
 #include <QObject>
 #include "Image.h"
 #include "planet.h"
+#include "solaire.h"
 
 
 
@@ -14,10 +15,15 @@ class GLMain: public QGLWidget
 	public:
 	GLMain(QWidget *parent = 0);
 	int getCubeAngle(){return cubeAngle;}
+	// int getCurrentColour(){return currentColourEmission;}
 
 	public slots:
 		void setCubeAngle(int angle);
 		void setCubeAngle();
+		void setSolairePose(int i);
+		void changeStarColours();
+		GLfloat * getCurrentColour();
+
 	
 
 	protected:
@@ -40,8 +46,21 @@ class GLMain: public QGLWidget
 	Planet * earth = nullptr;
   	Planet * moon = nullptr;
   	Planet * sun = nullptr;
+	Solaire * solaire = nullptr;
+	int currentColourEmission = 0;
 
 	int cubeAngle = 0;
+
+	GLfloat emission[8][4] = {
+		{0,0,0,1},
+		{1,0,0,1},
+		{0,1,0,1},
+		{0,1,1,1},
+		{1,0,1,1},
+		{1,1,0,1},
+		{1,1,0,1},
+		{0,0,0,1},
+	};
 
 	}; // class GLPolygonWidget
 	
